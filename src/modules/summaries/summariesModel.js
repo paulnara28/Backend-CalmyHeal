@@ -3,23 +3,17 @@ const connection = require("../../config/mysql");
 module.exports = {
   getAllSumarry: (limit, offset, search, sort, book_id) =>
     new Promise((resolve, reject) => {
-      let query = `SELECT * FROM summaries WHERE book_id = ?`;
-      let params = [book_id, limit, offset];
-
-      if (search) {
-        query += ` AND content LIKE ?`;
-        params.push(`%${search}%`);
-      }
-
-      query += ` ORDER BY ${sort} LIMIT ? OFFSET ?`;
-
-      connection.query(query, params, (err, result) => {
-        if (!err) {
-          resolve(result);
-        } else {
-          reject(new Error(`SQL : ${err.message}`));
+      connection.query(
+        `SELECT * FROM summaries WHERE book_id = ? LIMIT ? OFFSET ?`,
+        [book_id, limit, offset],
+        (err, result) => {
+          if (!err) {
+            resolve(result);
+          } else {
+            reject(new Error(`SQL : ${err.message}`));
+          }
         }
-      });
+      );
     }),
 
   getSummaryById: (id) =>
