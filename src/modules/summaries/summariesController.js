@@ -7,13 +7,26 @@ const SumarryModel = require("./summariesModel");
 module.exports = {
   getAllSumarry: async (req, res) => {
     try {
-      let { page, limit, search, sort } = req.query;
+      let { page, limit, search, sort, book_id } = req.query;
       page = Number(page) || 1;
       limit = Number(limit) || 10;
       search = search || "";
       sort = sort || "created_at ASC";
       let offset = page * limit - limit;
-      const totalData = await SumarryModel.getCountSumarry(search);
+
+      if (!book_id) {
+        return helperWrapper.response(
+          res,
+          400,
+          "Bad request (book_id is required)",
+          null
+        );
+      }
+
+      const totalData = await SumarryModel.getCountSumarry(
+        search,
+        book_id
+      );
       const totalPage = Math.ceil(totalData / limit);
       if (totalPage < page) {
         offset = 0;
@@ -30,11 +43,12 @@ module.exports = {
         limit,
         offset,
         search,
-        sort
+        sort,
+        book_id
       );
 
       if (result.length < 1) {
-        return helperWrapper.response(res, 200, `Data not found !`, []);
+        return helperWrapper.response(res, 200, `Data not found!`, []);
       }
       return helperWrapper.response(
         res,
