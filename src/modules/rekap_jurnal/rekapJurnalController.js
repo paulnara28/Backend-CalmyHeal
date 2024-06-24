@@ -95,7 +95,7 @@ module.exports = {
   },
   postRekapJurnal: async (req, res) => {
     try {
-      const { user_id, name, email, notes } = req.body;
+      const { user_id, notes } = req.body;
 
       if (!user_id || !notes) {
         return helperWrapper.response(
@@ -108,8 +108,6 @@ module.exports = {
 
       const data = {
         user_id,
-        name,
-        email,
         notes,
         created_at: new Date(),
       };
@@ -142,8 +140,6 @@ module.exports = {
 
       const data = {
         user_id,
-        name,
-        email,
         notes,
         updated_at: new Date(),
       };
